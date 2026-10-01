@@ -1,0 +1,35 @@
+import { useState } from 'react'
+import { ArrowRight, Clock3, GraduationCap, LoaderCircle, Sparkles, Target } from 'lucide-react'
+
+const examples = ['Machine Learning', 'Web Development', 'Data Science', 'UX Design']
+
+export default function Home({ onGenerate, busy, error, roadmaps, onOpenRoadmap }) {
+  const [goal, setGoal] = useState('')
+  const [level, setLevel] = useState('beginner')
+  const [hours, setHours] = useState(7)
+  function submit(event) {
+    event.preventDefault()
+    if (goal.trim()) onGenerate({ goal: goal.trim(), level, hours_per_week: Number(hours) })
+  }
+  return <div className="mx-auto max-w-6xl space-y-7">
+    <section className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-violet-700 via-violet-600 to-indigo-700 px-6 py-8 text-white shadow-xl shadow-violet-200 md:px-10 md:py-11">
+      <div className="absolute -right-12 -top-24 h-72 w-72 rounded-full border-[36px] border-white/5"/><div className="absolute -bottom-40 right-48 h-72 w-72 rounded-full bg-indigo-400/20 blur-3xl"/>
+      <div className="relative max-w-2xl"><span className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1.5 text-[10px] font-bold uppercase tracking-[.14em] text-violet-100"><Sparkles size={13}/> Your personal learning companion</span><h2 className="mt-5 font-display text-3xl font-extrabold leading-tight tracking-tight md:text-[40px]">Big goals become<br className="hidden sm:block"/> doable daily steps.</h2><p className="mt-3 max-w-lg text-sm leading-relaxed text-violet-100">Tell us what you want to learn. EduPilot creates a weekly roadmap, daily practice tasks, and a pace that fits your schedule.</p></div>
+      <div className="absolute bottom-8 right-10 hidden h-24 w-24 rotate-6 items-center justify-center rounded-[28px] border border-white/20 bg-white/10 text-white/90 shadow-2xl backdrop-blur-sm lg:flex"><GraduationCap size={42}/></div>
+    </section>
+    <div className="grid gap-6 lg:grid-cols-[minmax(0,1.25fr)_minmax(260px,.75fr)]">
+      <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm md:p-7">
+        <div className="flex items-center gap-3"><span className="grid h-10 w-10 place-items-center rounded-xl bg-violet-50 text-violet-600"><Target size={19}/></span><div><h3 className="text-sm font-bold text-slate-800">Create your learning roadmap</h3><p className="mt-1 text-xs text-slate-400">A few details help us set the right pace.</p></div></div>
+        <form onSubmit={submit} className="mt-6 space-y-4"><label className="block"><span className="mb-2 block text-[10px] font-bold uppercase tracking-[.12em] text-slate-500">Enter your learning goal</span><textarea required minLength={3} maxLength={500} value={goal} onChange={(event)=>setGoal(event.target.value)} rows={3} placeholder="e.g. I want to learn Machine Learning in 2 months" className="w-full resize-y rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700 outline-none transition placeholder:text-slate-400 focus:border-violet-300 focus:bg-white focus:ring-4 focus:ring-violet-50"/><span className="mt-1 block text-right text-[10px] text-slate-400">{goal.length}/500</span></label>
+          <div className="grid gap-3 sm:grid-cols-2"><label><span className="mb-2 block text-[10px] font-bold uppercase tracking-[.12em] text-slate-500">Experience level</span><select value={level} onChange={(event)=>setLevel(event.target.value)} className="h-11 w-full rounded-xl border border-slate-200 bg-white px-3 text-xs text-slate-700 outline-none focus:border-violet-300 focus:ring-4 focus:ring-violet-50"><option value="beginner">Beginner</option><option value="intermediate">Intermediate</option><option value="advanced">Advanced</option></select></label><label><span className="mb-2 block text-[10px] font-bold uppercase tracking-[.12em] text-slate-500">Study time per week</span><select value={hours} onChange={(event)=>setHours(event.target.value)} className="h-11 w-full rounded-xl border border-slate-200 bg-white px-3 text-xs text-slate-700 outline-none focus:border-violet-300 focus:ring-4 focus:ring-violet-50">{[3,5,7,10,14,20].map((n)=><option value={n} key={n}>{n} hours</option>)}</select></label></div>
+          {error&&<p role="alert" className="rounded-xl bg-rose-50 px-3 py-2 text-xs text-rose-700">{error}</p>}
+          <button disabled={!goal.trim()||busy} className="flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-violet-600 text-xs font-bold text-white shadow-lg shadow-violet-200 transition hover:bg-violet-700 disabled:cursor-not-allowed disabled:opacity-50">{busy?<><LoaderCircle size={16} className="animate-spin"/>Building your roadmap…</>:<>Generate Roadmap<Sparkles size={15}/><ArrowRight size={15}/></>}</button>
+        </form>
+        <div className="mt-5 flex flex-wrap items-center gap-2"><span className="mr-1 text-[9px] font-bold uppercase tracking-wider text-slate-400">Try a goal</span>{examples.map((example)=><button onClick={()=>setGoal(`I want to learn ${example} in 2 months`)} key={example} className="rounded-full border border-slate-200 bg-white px-3 py-1.5 text-[10px] font-medium text-slate-500 transition hover:border-violet-200 hover:bg-violet-50 hover:text-violet-700">{example}</button>)}</div>
+      </section>
+      <aside className="space-y-4"><section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"><div className="mb-4 flex items-center gap-2"><Clock3 size={16} className="text-violet-600"/><h3 className="text-xs font-bold text-slate-800">How EduPilot works</h3></div>{[['01','Tell us your goal','Share what you want to learn and your available time.'],['02','Get your roadmap','An AI planner organizes the goal into weekly and daily steps.'],['03','Learn and track','Check off tasks and see your progress grow.']].map(([n,title,body])=><div className="flex gap-3 border-t border-slate-100 py-3 first:border-0 first:pt-0" key={n}><span className="grid h-7 w-7 shrink-0 place-items-center rounded-lg bg-violet-50 text-[10px] font-bold text-violet-600">{n}</span><div><p className="text-[11px] font-semibold text-slate-700">{title}</p><p className="mt-1 text-[10px] leading-relaxed text-slate-400">{body}</p></div></div>)}</section>
+      {roadmaps.length>0&&<section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"><div className="mb-3 flex items-center justify-between"><h3 className="text-xs font-bold text-slate-800">Pick up where you left off</h3><span className="text-[10px] text-slate-400">{roadmaps.length} saved</span></div>{roadmaps.slice(0,3).map((roadmap)=><button key={roadmap.id} onClick={()=>onOpenRoadmap(roadmap)} className="flex w-full items-center gap-2 border-t border-slate-100 py-3 text-left first:border-0"><span className="h-2 w-2 shrink-0 rounded-full bg-violet-400"/><span className="flex-1 truncate text-[11px] font-medium text-slate-600">{roadmap.goal}</span><ArrowRight size={13} className="text-slate-300"/></button>)}</section>}
+      </aside>
+    </div>
+  </div>
+}
